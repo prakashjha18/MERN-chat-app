@@ -12,9 +12,9 @@ function App() {
     <Router>
       <div className='App'>
         <UserContext.Provider value={{user,setUser}}>
-          <Navbar/>
+          <Navbar/> 
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/"  component={Home} />
           <Route path="/chat" component={Chat} />
         </Switch>
         </UserContext.Provider>
