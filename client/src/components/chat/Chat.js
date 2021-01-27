@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../UserContext'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, Redirect } from 'react-router-dom'
 import io from 'socket.io-client'
 import Messages from './messages/Messages'
 import Input from './input/Input'
@@ -36,6 +36,9 @@ const Chat = () => {
       console.log(message)
       socket.emit('sendMessage', message, room_id, () => setMessage(''))
     }
+  }
+  if (!user) {
+    return <Redirect to='/login' />
   }
   return (
     <div className="outerContainer">
