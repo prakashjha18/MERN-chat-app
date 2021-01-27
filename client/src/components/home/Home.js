@@ -1,70 +1,54 @@
-import React, { useContext,useState,useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../../UserContext'
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import RoomList from './RoomList'
 import io from 'socket.io-client'
-let socket;
+let socket
 const Home = () => {
   const ENDPT = 'localhost:5000'
 
   const { user, setUser } = useContext(UserContext)
-  const [room,setRoom]=useState('')
-  const [rooms,setRooms] = useState([])
-  useEffect(()=> {
+  const [room, setRoom] = useState('')
+  const [rooms, setRooms] = useState([])
+  useEffect(() => {
     socket = io(ENDPT)
     return () => {
-      socket.emit('disconnect');
-      socket.off();
+      socket.emit('disconnect')
+      socket.off()
     }
-  },[ENDPT])
+  }, [ENDPT])
   useEffect(() => {
     console.log(rooms)
-  },[rooms])
+  }, [rooms])
   useEffect(() => {
-    socket.on('output-rooms',rooms=>{
+    socket.on('output-rooms', (rooms) => {
       setRooms(rooms)
     })
-  },[])
+  }, [])
   useEffect(() => {
-    socket.on('room-created',room => {
-      setRooms([...rooms,room])
+    socket.on('room-created', (room) => {
+      setRooms([...rooms, room])
     })
-  },[rooms])
+  }, [rooms])
   const handleSubmit = (e) => {
-    e.preventDefault();
-    socket.emit('create-room',room)
+    e.preventDefault()
+    socket.emit('create-room', room)
     console.log(room)
     setRoom('')
   }
 
-  const setAsJohn = () => {
-    const john = {
-      name: 'John',
-      email: 'john@email.com',
-      password: '123',
-      id: '123',
-    }
-    setUser(john)
+
+  if (!user) {
+    return <Redirect to='/login' />
   }
-  const setAsTom = () => {
-    const tom = {
-      name: 'Tom',
-      email: 'tom@email.com',
-      password: '123',
-      id: '456',
-    }
-    setUser(tom)
-  }
-  return ( 
-    
+  return (
     <div>
-      
       <div className='row'>
         <div className='col s12 m6'>
           <div className='card blue-grey darken-1'>
             <div className='card-content white-text'>
               <span className='card-title'>
-                welcome 
+                welcome {user ? user.name : ''}
               </span>
 
               <div className='row'>
@@ -76,7 +60,7 @@ const Home = () => {
                         id='room'
                         type='text'
                         value={room}
-                        onChange={e => setRoom(e.target.value)}
+                        onChange={(e) => setRoom(e.target.value)}
                         className='validate'
                       />
                       <label htmlFor='room'>room</label>
@@ -87,22 +71,14 @@ const Home = () => {
               </div>
             </div>
             <div className='card-action'>
-              <a href='#' onClick={setAsJohn}>
-                set as John
-              </a>
-              <a href='#' onClick={setAsTom}>
-                set as Tom
-              </a>
+              
             </div>
           </div>
         </div>
-        <div className="col s6 m5 offset-1">
-          <RoomList rooms={rooms}/>
+        <div className='col s6 m5 offset-1'>
+          <RoomList rooms={rooms} />
         </div>
       </div>
-      <Link to={'/chat'}>
-        <button>go to chat</button>
-      </Link>
     </div>
   )
 }
