@@ -1,14 +1,29 @@
 const app = require('express')()
 const http = require('http').createServer(app)
+const mongoose = require('mongoose')
 const socketio = require('socket.io')
 const io = socketio(http)
-const { addUser,removeUser,getUser } = require('./helper')
+const mongoDB =
+  'mongodb+srv://ckmobile:ckmobile123@cluster0.kaxh6.mongodb.net/chat-databse?retryWrites=true&w=majority'
+mongoose
+  .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('connected'))
+  .catch((err) => console.log(err))
+const { addUser, removeUser, getUser } = require('./helper')
 const PORT = process.env.PORT || 5000
+const Room = require('./models/Room');
 
 io.on('connection', (socket) => {
   console.log(socket.id)
+  Room.find().then(result => {
+    socket.emit('output-rooms',result)
+  })
   socket.on('create-room', (name) => {
-    console.log('then room name received is', name)
+    //console.log('then room name received is', name)
+    const room = new Room({name})
+    room.save().then(result => {
+      io.emit('room-created',result)
+    })
   })
   socket.on('join', ({ name, room_id, user_id }) => {
     const { error, user } = addUser({
@@ -21,22 +36,22 @@ io.on('connection', (socket) => {
     if (error) {
       console.log('join error', error)
     } else {
-        console.log('join user',user)
+      console.log('join user', user)
     }
   })
-  socket.on('sendMessage',(message,room_id,callback)=>{
-    const user = getUser(socket.id);
+  socket.on('sendMessage', (message, room_id, callback) => {
+    const user = getUser(socket.id)
     const msgToStore = {
-      name:user.name,
-      user_id:user.user_id,
+      name: user.name,
+      user_id: user.user_id,
       room_id,
-      text:message
+      text: message,
     }
-    console.log('message',msgToStore)
-    io.to(room_id).emit('message',msgToStore)
+    console.log('message', msgToStore)
+    io.to(room_id).emit('message', msgToStore)
   })
-  socket.on('disconnect', ()=>{
-    const user = removeUser(socket.id);
+  socket.on('disconnect', () => {
+    const user = removeUser(socket.id)
   })
 })
 
