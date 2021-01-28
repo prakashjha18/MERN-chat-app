@@ -18,7 +18,7 @@ const mongoose = require('mongoose')
 const socketio = require('socket.io')
 const io = socketio(http)
 const mongoDB =
-  'mongodb+srv://ckmobile:ckmobile123@cluster0.kaxh6.mongodb.net/chat-databse?retryWrites=true&w=majority'
+  'mongodb+srv://<>:<>@cluster0.kaxh6.mongodb.net/<>?retryWrites=true&w=majority'
 mongoose
   .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('connected'))
