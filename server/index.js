@@ -3,7 +3,7 @@ const app = express()
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 var corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3001',
   credentials: true,
   optionsSuccessStatus: 200, // For legacy browser support
 }
@@ -17,15 +17,16 @@ const http = require('http').createServer(app)
 const mongoose = require('mongoose')
 const socketio = require('socket.io')
 const io = socketio(http)
-const mongoDB =
-  'mongodb+srv://ckmobile:ckmobile123@cluster0.kaxh6.mongodb.net/chat-databse?retryWrites=true&w=majority'
+// const mongoDB =
+//   'mongodb+srv://ckmobile:ckmobile123@cluster0.kaxh6.mongodb.net/chat-databse?retryWrites=true&w=majority'
+const mongoDB = 'mongodb://localhost:27017/boilerplate'
 mongoose
   .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('connected'))
   .catch((err) => console.log(err))
 const { addUser, getUser, removeUser } = require('./helper')
 const Message = require('./models/Message')
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 const Room = require('./models/Room')
 
 app.get('/set-cookies', (req, res) => {

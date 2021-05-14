@@ -3,22 +3,27 @@ const bcrypt = require('bcrypt');
 const { isEmail } = require('validator');
 const userSchema = new mongoose.Schema({
     name: {
-        type: String,
-        required: [true, 'Please enter a name']
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: [true, 'Please enter a email'],
-        unique: true,
-        lowercase: true,
-        validate: [isEmail, 'Please enter a valid email address']
+      type: String,
+      required: true,
+      unique: true,
     },
     password: {
-        type: String,
-        required: [true, 'Please enter a password'],
-        minlength: [6, 'The password should be at least 6 characters long']
+      type: String,
+      required: true,
     },
-})
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  })
 userSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);

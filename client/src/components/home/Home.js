@@ -5,7 +5,7 @@ import RoomList from './RoomList'
 import io from 'socket.io-client'
 let socket
 const Home = () => {
-  const ENDPT = 'localhost:5000'
+  const ENDPT = 'localhost:5001'
 
   const { user, setUser } = useContext(UserContext)
   const [room, setRoom] = useState('')
@@ -77,6 +77,7 @@ const Home = () => {
         </div>
         <div className='col s6 m5 offset-1'>
           <RoomList rooms={rooms} />
+          {console.log(room,rooms,user,"dfihufydufyiuyfdiyfdisyf")}
         </div>
       </div>
     </div>

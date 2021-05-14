@@ -23,7 +23,7 @@ npm install
 npm start
 ```
 
-### Run the back-end server (http://localhost:5000)
+### Run the back-end server (http://localhost:5001)
 
 ```
 nodemon index
